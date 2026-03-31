@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="台指選">
+<meta name="theme-color" content="#f5f2ed">
+<title>台指選 進場訊號</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Serif+Display&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f5f2ed;
+  --bg2:#ffffff;
+  --bg3:#f0ece6;
+  --bg4:#e8e3db;
+  --text:#1c1a17;
+  --text2:#5a5650;
+  --text3:#9a9590;
+  --border:#ddd9d2;
+  --border2:#c8c3bb;
+  --red:#c0392b;
+  --red-bg:#fdf2f1;
+  --red-mid:#e8b4b0;
+  --green:#1a7a5e;
+  --green-bg:#f0f9f5;
+  --green-mid:#8ec9b5;
+  --amber:#a0620a;
+  --amber-bg:#fdf8f0;
+  --blue:#1a4a8a;
+  --blue-bg:#f0f4fc;
+  --radius:10px;
+  --radius-lg:14px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+body{
+  font-family:'Noto Sans TC',sans-serif;
+  font-weight:400;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom));
+}
+.mono{font-family:'DM Mono',monospace}
+
+/* header */
+.header{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:14px 18px 13px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;top:0;z-index:100;
+  box-shadow:var(--shadow);
+}
+.header-brand{display:flex;flex-direction:column;gap:1px}
+.header-title{font-size:14px;font-weight:500;color:var(--text);letter-spacing:0.04em}
+.header-sub{font-size:10px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:8px}
+.live-wrap{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;background:var(--bg3);border:1px solid var(--border)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#27ae60;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.live-time{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+
+/* price section */
+.price-section{
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:16px 18px;
+}
+.price-label{font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
+.price-row{display:flex;align-items:center;gap:12px}
+.price-input{
+  background:transparent;border:none;
+  font-size:34px;font-weight:500;
+  color:var(--text);
+  font-family:'DM Mono',monospace;
+  width:170px;outline:none;
+  -webkit-appearance:none;
+  letter-spacing:-0.02em;
+}
+.price-input::-webkit-inner-spin-button{display:none}
+.badge{
+  font-size:11px;padding:5px 12px;
+  border-radius:20px;font-weight:500;
+  letter-spacing:0.03em;
+}
+.b-n{background:var(--bg3);color:var(--text3);border:1px solid var(--border)}
+.b-w{background:var(--amber-bg);color:var(--amber);border:1px solid #e8c98a}
+.b-sc{background:var(--red-bg);color:var(--red);border:1px solid var(--red-mid)}
+.b-sp{background:var(--green-bg);color:var(--green);border:1px solid var(--green-mid)}
+.b-both{background:var(--blue-bg);color:var(--blue);border:1px solid #a0b8e8}
+
+/* alert banner */
+.alert-banner{display:none;margin:12px 18px 0;padding:11px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;line-height:1.5}
+.alert-banner.show{display:block}
+.ab-sc{background:var(--red-bg);color:var(--red);border:1px solid var(--red-mid)}
+.ab-sp{background:var(--green-bg);color:var(--green);border:1px solid var(--green-mid)}
+.ab-both{background:var(--blue-bg);color:var(--blue);border:1px solid #a0b8e8}
+.ab-w{background:var(--amber-bg);color:var(--amber);border:1px solid #e8c98a}
+
+/* sim strip */
+.sim-strip{
+  display:flex;gap:6px;overflow-x:auto;
+  padding:10px 18px 0;
+  scrollbar-width:none;
+}
+.sim-strip::-webkit-scrollbar{display:none}
+.sim-btn{
+  flex-shrink:0;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:6px;
+  color:var(--text2);
+  font-size:11px;
+  font-family:'DM Mono',monospace;
+  padding:4px 10px;cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.sim-btn:active{background:var(--bg3)}
+
+/* section */
+.section{padding:14px 18px 0}
+.section-label{
+  font-size:10px;color:var(--text3);
+  text-transform:uppercase;letter-spacing:0.1em;
+  font-weight:500;margin-bottom:8px;
+}
+
+/* expiry */
+.exp-strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.exp-strip::-webkit-scrollbar{display:none}
+.exp-card{
+  flex-shrink:0;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:9px 13px;
+  cursor:pointer;
+  min-width:88px;
+  text-align:center;
+  box-shadow:var(--shadow);
+  transition:border-color 0.15s;
+}
+.exp-card.sel{border-color:var(--blue);background:var(--blue-bg)}
+.exp-card.sel .ec-date{color:var(--blue)}
+.ec-date{font-size:12px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text)}
+.ec-type{font-size:10px;color:var(--text3);margin-top:2px}
+.ec-dte{font-size:11px;font-weight:500;margin-top:4px}
+.dte-u{color:var(--red)}.dte-o{color:var(--green)}.dte-f{color:var(--text3)}
+.postpone-note{
+  font-size:11px;color:var(--amber);
+  padding:6px 18px 0;line-height:1.5;
+  display:none;
+}
+
+/* signal boxes */
+.sig-section{padding:14px 18px 0}
+.sig-box{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:15px;margin-bottom:10px;
+  box-shadow:var(--shadow);
+}
+.sig-box.sc-on{border-color:var(--red-mid);background:var(--red-bg);box-shadow:0 2px 8px rgba(192,57,43,0.08)}
+.sig-box.sp-on{border-color:var(--green-mid);background:var(--green-bg);box-shadow:0 2px 8px rgba(26,122,94,0.08)}
+.sig-title{font-size:13px;font-weight:500;margin-bottom:10px;letter-spacing:0.02em}
+.sig-title.sc{color:var(--red)}.sig-title.sp{color:var(--green)}.sig-title.off{color:var(--text3)}
+.sig-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:5px}
+.sig-lbl{font-size:11px;color:var(--text3);width:64px;flex-shrink:0;padding-top:2px;letter-spacing:0.02em}
+.sig-val{font-size:13px;color:var(--text);flex:1;font-family:'DM Mono',monospace;font-weight:500}
+.sig-val.sc{color:var(--red)}.sig-val.sp{color:var(--green)}
+.strike-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:1px}
+.spill{
+  padding:3px 10px;border-radius:6px;
+  font-family:'DM Mono',monospace;
+  font-size:13px;font-weight:500;
+}
+.spill-sc{background:#fbe8e7;color:var(--red);border:1px solid #e8b4b0}
+.spill-sp{background:#e3f5ee;color:var(--green);border:1px solid #8ec9b5}
+.sig-note{
+  font-size:11px;color:var(--text3);
+  margin-top:8px;line-height:1.6;
+  padding-top:8px;
+  border-top:1px solid var(--border);
+}
+
+/* levels */
+.levels-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 18px 0}
+.lv-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:12px;
+  box-shadow:var(--shadow);
+}
+.lv-card-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;font-weight:500}
+.lv-row{display:flex;align-items:center;gap:5px;padding:5px 0;border-bottom:1px solid var(--border)}
+.lv-row:last-of-type{border-bottom:none}
+.lv-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-r{background:var(--red)}.dot-b{background:#4a90d9}
+.lv-price{font-size:12px;font-weight:500;font-family:'DM Mono',monospace;color:var(--text);flex:1}
+.lv-dist{font-size:10px;font-family:'DM Mono',monospace;text-align:right;min-width:32px}
+.dn{color:var(--red)}.dm{color:var(--amber)}.df{color:var(--text3)}
+.lv-del{background:transparent;border:none;color:var(--text3);font-size:12px;cursor:pointer;padding:0 2px;opacity:0.4}
+.lv-del:active{opacity:1;color:var(--red)}
+
+/* add */
+.add-section{padding:12px 18px 0}
+.add-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow)}
+.add-title{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-weight:500}
+.add-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.add-row label{font-size:12px;color:var(--text3);width:48px;flex-shrink:0}
+.add-input{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text);
+  font-family:'DM Mono',monospace;font-size:14px;
+  padding:8px 10px;flex:1;outline:none;
+  -webkit-appearance:none;
+}
+.add-input:focus{border-color:var(--border2);background:var(--bg2)}
+.add-select{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text);
+  font-size:12px;padding:8px 10px;outline:none;flex:1;
+}
+.add-btn{
+  background:var(--text);color:var(--bg2);
+  border:none;border-radius:var(--radius);
+  font-size:13px;font-weight:500;padding:10px;
+  cursor:pointer;text-align:center;width:100%;
+  margin-top:2px;letter-spacing:0.03em;
+}
+.add-btn:active{background:var(--text2)}
+
+/* conditions */
+.cond-section{padding:12px 18px 0}
+.cond-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow)}
+.cond-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.cond-row:last-child{border-bottom:none}
+.ci{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:700}
+.ci-ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-mid)}
+.ci-no{background:var(--bg3);color:var(--text3);border:1px solid var(--border)}
+.ci-w{background:var(--amber-bg);color:var(--amber);border:1px solid #e8c98a}
+.ct2{font-size:12px;color:var(--text2);flex:1}
+.cv{font-size:11px;font-family:'DM Mono',monospace;font-weight:500}
+.cv-ok{color:var(--green)}.cv-w{color:var(--amber)}.cv-no{color:var(--text3)}
+
+/* settings */
+.settings-section{padding:12px 18px 0}
+.settings-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow)}
+.set-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.set-row:last-child{border-bottom:none}
+.set-lbl{font-size:12px;color:var(--text3);width:68px;flex-shrink:0}
+.set-input{
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:8px;color:var(--text);
+  font-family:'DM Mono',monospace;font-size:13px;
+  padding:5px 8px;width:76px;outline:none;
+  -webkit-appearance:none;text-align:right;
+}
+.set-input:focus{border-color:var(--border2);background:var(--bg2)}
+.set-unit{font-size:11px;color:var(--text3)}
+
+/* OTE table */
+.ote-divider{height:1px;background:var(--border);margin:10px 0}
+.ote-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.1em;font-weight:500;margin-bottom:6px}
+.ote-table{width:100%;font-size:12px;border-collapse:collapse}
+.ote-table th{font-size:10px;color:var(--text3);text-align:left;padding:4px 6px;border-bottom:1px solid var(--border);font-weight:500;text-transform:uppercase;letter-spacing:0.05em}
+.ote-table td{padding:6px 6px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;color:var(--text2);font-size:12px}
+.ote-table tr:last-child td{border-bottom:none}
+.ote-table tr.active-ote td{color:var(--blue);font-weight:500;background:var(--blue-bg)}
+
+/* holidays */
+.hol-section{padding:12px 18px 24px}
+.hol-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.hol-tag{font-size:10px;padding:3px 8px;border-radius:4px;background:var(--bg3);color:var(--text3);border:1px solid var(--border);font-family:'DM Mono',monospace}
+
+/* ask button */
+.ask-btn{
+  display:block;
+  width:calc(100% - 36px);
+  margin:14px 18px 0;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  color:var(--text2);
+  font-size:13px;font-weight:500;
+  padding:13px;cursor:pointer;
+  text-align:center;
+  box-shadow:var(--shadow);
+  letter-spacing:0.02em;
+}
+.ask-btn:active{background:var(--bg3)}
+
+/* subtle divider spacing */
+.spacer{height:14px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    <div class="header-title">台指選 進場訊號</div>
+    <div class="header-sub">TXO Signal Tracker</div>
+  </div>
+  <div class="header-right">
+    <div class="live-wrap">
+      <div class="live-dot"></div>
+      <span class="live-time" id="clock">--:--:--</span>
+    </div>
+  </div>
+</div>
+
+<div class="price-section">
+  <div class="price-label">台指期現價</div>
+  <div class="price-row">
+    <input type="number" class="price-input" id="curPrice" value="32177" inputmode="numeric" oninput="run()">
+    <span class="badge b-n" id="mainBadge">觀望中</span>
+  </div>
+</div>
+
+<div id="alertBanner" class="alert-banner"></div>
+<div class="sim-strip" id="simBtns"></div>
+
+<div class="section">
+  <div class="section-label">到期合約</div>
+  <div class="exp-strip" id="expStrip"></div>
+</div>
+<div class="postpone-note" id="postponeNote"></div>
+
+<div class="sig-section">
+  <div id="scBox" class="sig-box">
+    <div class="sig-title off" id="scTitle">SC 賣出買權</div>
+    <div id="scBody"><div class="sig-note" style="border-top:none;padding-top:0;margin-top:0">尚未觸發進場條件</div></div>
+  </div>
+  <div id="spBox" class="sig-box">
+    <div class="sig-title off" id="spTitle">SP 賣出賣權</div>
+    <div id="spBody"><div class="sig-note" style="border-top:none;padding-top:0;margin-top:0">尚未觸發進場條件</div></div>
+  </div>
+</div>
+
+<div class="levels-grid">
+  <div class="lv-card">
+    <div class="lv-card-title">壓力</div>
+    <div id="resLevels"></div>
+  </div>
+  <div class="lv-card">
+    <div class="lv-card-title">支撐</div>
+    <div id="supLevels"></div>
+  </div>
+</div>
+
+<div class="add-section">
+  <div class="add-card">
+    <div class="add-title">新增點位（自動取百位）</div>
+    <div class="add-row">
+      <label>點位</label>
+      <input type="number" class="add-input" id="addPrice" placeholder="如 32300" inputmode="numeric" step="100">
+    </div>
+    <div class="add-row">
+      <label>類型</label>
+      <select class="add-select" id="addType">
+        <option value="res-red">壓力 強（紅）</option>
+        <option value="res-blue">壓力 弱（藍）</option>
+        <option value="sup-red">支撐 強（紅）</option>
+        <option value="sup-blue">支撐 弱（藍）</option>
+      </select>
+    </div>
+    <button class="add-btn" onclick="addLevel()">新增點位</button>
+  </div>
+</div>
+
+<div class="cond-section">
+  <div class="section-label">條件狀態</div>
+  <div class="cond-card" id="condList"></div>
+</div>
+
+<div class="settings-section">
+  <div class="section-label">條件設定</div>
+  <div class="settings-card">
+    <div class="set-row"><span class="set-lbl">接近區間</span><input class="set-input" type="number" id="setZone" value="80" inputmode="numeric"><span class="set-unit">點以內觸發</span></div>
+    <div class="set-row"><span class="set-lbl">IV 下限</span><input class="set-input" type="number" id="setIVmin" value="15" inputmode="decimal"><span class="set-unit">%</span></div>
+    <div class="set-row"><span class="set-lbl">IV 上限</span><input class="set-input" type="number" id="setIVmax" value="35" inputmode="decimal"><span class="set-unit">%</span></div>
+    <div class="set-row"><span class="set-lbl">IV 現值</span><input class="set-input" type="number" id="curIV" value="19.5" inputmode="decimal" step="0.5"><span class="set-unit">%</span></div>
+    <div class="ote-divider"></div>
+    <div class="ote-label">價外幅度參考</div>
+    <table class="ote-table">
+      <tr><th>剩餘天數</th><th>建議價外</th></tr>
+      <tr id="ote0"><td>5 天以上</td><td>2000 點</td></tr>
+      <tr id="ote1"><td>3 ～ 4 天</td><td>1000 ～ 1800 點</td></tr>
+      <tr id="ote2"><td>1 ～ 2 天</td><td>300 ～ 1000 點</td></tr>
+    </table>
+  </div>
+</div>
+
+<button class="ask-btn" onclick="askClaude()">詢問 Claude 進場建議 ↗</button>
+
+<div class="hol-section">
+  <div class="section-label">2026 年台股休市日</div>
+  <div class="hol-list" id="holList"></div>
+</div>
+
+<script>
+const HOLIDAYS=[
+  '2026-01-01','2026-02-11','2026-02-12','2026-02-13',
+  '2026-02-15','2026-02-16','2026-02-17','2026-02-18','2026-02-19','2026-02-20',
+  '2026-02-27','2026-02-28',
+  '2026-04-03','2026-04-04','2026-04-05','2026-04-06',
+  '2026-05-01','2026-06-19',
+  '2026-09-25','2026-09-28',
+  '2026-10-09','2026-10-10','2026-10-25','2026-10-26',
+  '2026-12-25'
+];
+
+function floorH(n){return Math.floor(n/100)*100;}
+
+let levels={
+  resistance:[
+    {id:1,price:34200,type:'red',label:'強壓力'},
+    {id:2,price:33600,type:'red',label:'強壓力'},
+    {id:3,price:32200,type:'red',label:'強壓力'},
+    {id:4,price:34000,type:'blue',label:'弱壓力'},
+    {id:5,price:32600,type:'blue',label:'弱壓力'},
+  ],
+  support:[
+    {id:6,price:32500,type:'red',label:'強支撐'},
+    {id:7,price:31700,type:'red',label:'強支撐'},
+    {id:8,price:32800,type:'blue',label:'弱支撐'},
+  ]
+};
+let nextId=20,selDTE=0,selExpLabel='';
+
+function toKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function isHol(d){return HOLIDAYS.includes(toKey(d));}
+function isWknd(d){return d.getDay()===0||d.getDay()===6;}
+function isNT(d){return isWknd(d)||isHol(d);}
+function nextTD(d){const r=new Date(d);r.setDate(r.getDate()+1);while(isNT(r))r.setDate(r.getDate()+1);return r;}
+
+// 結算日順延規則：
+// 週三遇假日 → 找下一個交易日（通常是週四）
+// 週五遇假日 → 跳過週末，再找下一個交易日（通常是下週二）
+function getSettleDate(orig){
+  const dow=orig.getDay();
+  if(!isHol(orig)) return new Date(orig); // 沒放假就是當天
+  if(dow===3){
+    // 週三：往後找第一個交易日
+    const r=new Date(orig);
+    r.setDate(r.getDate()+1);
+    while(isNT(r)) r.setDate(r.getDate()+1);
+    return r;
+  } else {
+    // 週五：先跳過這週末（到下週一），再往後找第一個交易日
+    const r=new Date(orig);
+    r.setDate(r.getDate()+3); // 週五+3 = 下週一
+    while(isNT(r)) r.setDate(r.getDate()+1);
+    return r;
+  }
+}
+
+function getSettlements(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const res=[];const seen=new Set();
+  for(let i=0;i<=40&&res.length<5;i++){
+    const d=new Date(today);d.setDate(today.getDate()+i);
+    const dow=d.getDay();
+    if(dow!==3&&dow!==5)continue;
+    // 若原本的週三/週五本身是假日，跳過，由 getSettleDate 處理
+    const origKey=toKey(d);
+    // 避免重複（同一結算日被兩個原始日期映射）
+    const settle=getSettleDate(new Date(d));
+    const settleKey=toKey(settle);
+    if(seen.has(settleKey))continue;
+    seen.add(settleKey);
+    const orig=new Date(d);
+    const postponed=settleKey!==origKey;
+    const dte=Math.round((settle-today)/86400000);
+    if(dte<0)continue;
+    const wk=Math.ceil(orig.getDate()/7);
+    const type=dow===3?(wk===3?'月選':'週選'):'週選';
+    const days=['日','一','二','三','四','五','六'];
+    const origL=`${orig.getMonth()+1}/${orig.getDate()}`;
+    const settleL=`${settle.getMonth()+1}/${settle.getDate()}（週${days[settle.getDay()]}）`;
+    const mainL=postponed?settleL:origL+`（週${days[orig.getDay()]}）`;
+    res.push({dte,type,origL,settleL,mainL,postponed,origDow:dow});
+  }
+  return res;
+}
+
+function buildExpiry(){
+  const list=getSettlements();
+  const strip=document.getElementById('expStrip');
+  const note=document.getElementById('postponeNote');
+  strip.innerHTML='';note.style.display='none';
+  list.forEach((s,i)=>{
+    const c=document.createElement('div');
+    c.className='exp-card'+(i===0?' sel':'');
+    const dc=s.dte<=2?'dte-u':s.dte<=5?'dte-o':'dte-f';
+    c.innerHTML=`<div class="ec-date">${s.mainL.split('（')[0]}</div>
+      <div class="ec-type">${s.type}${s.postponed?' ·順延':''}</div>
+      <div class="ec-dte ${dc}">剩 ${s.dte} 天</div>`;
+    c.onclick=()=>{
+      document.querySelectorAll('.exp-card').forEach(x=>x.classList.remove('sel'));
+      c.classList.add('sel');selDTE=s.dte;selExpLabel=s.mainL;
+      if(s.postponed){note.style.display='block';note.textContent=`※ 原結算日 ${s.origL}（週${s.origDow===5?'五':'三'}）為假日，順延至 ${s.settleL}`;}
+      else note.style.display='none';
+      run();
+    };
+    strip.appendChild(c);
+    if(i===0){selDTE=s.dte;selExpLabel=s.mainL;
+      if(s.postponed){note.style.display='block';note.textContent=`※ 原結算日 ${s.origL}（週${s.origDow===5?'五':'三'}）為假日，順延至 ${s.settleL}`;}
+    }
+  });
+}
+
+function getOTE(dte){
+  if(dte>=5)return{label:'5天以上',steps:[2000],desc:'建議價外 2000 點',row:0};
+  if(dte>=3)return{label:'3～4天',steps:[1000,1400,1800],desc:'建議價外 1000～1800 點',row:1};
+  return{label:'1～2天',steps:[300,650,1000],desc:'建議價外 300～1000 點',row:2};
+}
+
+function buildStrikes(base,side,dte){
+  const ote=getOTE(dte);
+  return ote.steps.map(s=>floorH(side==='sc'?base+s:base-s));
+}
+
+function distCls(d){return d<=80?'dn':d<=200?'dm':'df';}
+
+function renderLevels(price,zone){
+  ['resistance','support'].forEach(side=>{
+    const el=document.getElementById(side==='resistance'?'resLevels':'supLevels');
+    const sorted=[...levels[side]].sort((a,b)=>side==='resistance'?a.price-b.price:b.price-a.price);
+    el.innerHTML=sorted.map(lv=>{
+      const dist=Math.abs(lv.price-price);
+      const near=dist<=zone;
+      return `<div class="lv-row">
+        <div class="lv-dot dot-${lv.type}"></div>
+        <span class="lv-price">${lv.price.toLocaleString()}</span>
+        <span class="lv-dist ${distCls(dist)}">${near?'★':''} ${dist}</span>
+        <button class="lv-del" onclick="delLevel('${side}',${lv.id})">✕</button>
+      </div>`;
+    }).join('')||'<div style="font-size:11px;color:var(--text3);padding:4px 0">尚未設定</div>';
+  });
+}
+
+function addLevel(){
+  const raw=parseInt(document.getElementById('addPrice').value);
+  if(!raw||raw<10000||raw>50000){
+    const el=document.getElementById('addPrice');
+    el.style.borderColor='var(--red)';
+    setTimeout(()=>el.style.borderColor='',1500);return;
+  }
+  const price=floorH(raw);
+  const typeVal=document.getElementById('addType').value;
+  const side=typeVal.startsWith('res')?'resistance':'support';
+  const strength=typeVal.endsWith('red')?'red':'blue';
+  const labelMap={'res-red':'強壓力','res-blue':'弱壓力','sup-red':'強支撐','sup-blue':'弱支撐'};
+  levels[side].push({id:nextId++,price,type:strength,label:labelMap[typeVal]});
+  document.getElementById('addPrice').value='';
+  saveState();buildSimBtns();run();
+}
+
+function delLevel(side,id){
+  levels[side]=levels[side].filter(l=>l.id!==id);
+  saveState();buildSimBtns();run();
+}
+
+function buildSimBtns(){
+  const wrap=document.getElementById('simBtns');
+  const all=[...levels.resistance,...levels.support].map(l=>l.price).sort((a,b)=>a-b);
+  wrap.innerHTML='';
+  all.forEach(p=>{
+    const b=document.createElement('button');
+    b.className='sim-btn';b.textContent=p.toLocaleString();
+    b.onclick=()=>{document.getElementById('curPrice').value=p;run();};
+    wrap.appendChild(b);
+  });
+}
+
+function renderSig(side,ready,nearLv,price,dte,iv,condIV){
+  const isc=side==='sc';
+  const box=document.getElementById(isc?'scBox':'spBox');
+  const title=document.getElementById(isc?'scTitle':'spTitle');
+  const body=document.getElementById(isc?'scBody':'spBody');
+  if(ready){
+    box.className='sig-box '+(isc?'sc-on':'sp-on');
+    title.className='sig-title '+(isc?'sc':'sp');
+    title.textContent=(isc?'SC 賣出買權':'SP 賣出賣權')+' — 進場訊號觸發';
+    const dist=Math.abs(nearLv.price-price);
+    const strikes=buildStrikes(nearLv.price,side,dte);
+    const ote=getOTE(dte);
+    const pc=isc?'spill-sc':'spill-sp';
+    const pills=strikes.map(s=>`<span class="spill ${pc}">${s.toLocaleString()}</span>`).join('');
+    body.innerHTML=`
+      <div class="sig-row"><span class="sig-lbl">觸發點位</span><span class="sig-val ${isc?'sc':'sp'}">${nearLv.label} ${nearLv.price.toLocaleString()}（差 ${dist} 點）</span></div>
+      <div class="sig-row"><span class="sig-lbl">結算日</span><span class="sig-val">${selExpLabel} · 剩 ${dte} 天</span></div>
+      <div class="sig-row"><span class="sig-lbl">建議履約價</span><div class="strike-pills">${pills}</div></div>
+      <div class="sig-note">剩 ${dte} 天（${ote.label}），${ote.desc}。請確認權利金 20～80 點後再進場。</div>`;
+  } else {
+    box.className='sig-box';
+    title.className='sig-title off';
+    title.textContent=isc?'SC 賣出買權':'SP 賣出賣權';
+    let msg='';
+    if(isc){const cr=levels.resistance.filter(l=>l.price>price).sort((a,b)=>a.price-b.price)[0];msg=cr?`最近壓力 ${cr.price.toLocaleString()}，還差 ${cr.price-price} 點`:'無上方壓力設定';}
+    else{const cs=levels.support.filter(l=>l.price<price).sort((a,b)=>b.price-a.price)[0];msg=cs?`最近支撐 ${cs.price.toLocaleString()}，還差 ${price-cs.price} 點`:'無下方支撐設定';}
+    if(!condIV)msg+=`  ·  IV ${iv}% 超出設定範圍`;
+    body.innerHTML=`<div class="sig-note" style="border-top:none;padding-top:0;margin-top:0">${msg}</div>`;
+  }
+}
+
+function run(){
+  const price=parseInt(document.getElementById('curPrice').value)||32177;
+  const zone=parseInt(document.getElementById('setZone').value)||80;
+  const ivMin=parseFloat(document.getElementById('setIVmin').value)||15;
+  const ivMax=parseFloat(document.getElementById('setIVmax').value)||35;
+  const iv=parseFloat(document.getElementById('curIV').value)||19.5;
+  const dte=selDTE;
+
+  renderLevels(price,zone);
+  const condIV=iv>=ivMin&&iv<=ivMax;
+  const nearRes=levels.resistance.filter(l=>l.price>price).sort((a,b)=>a.price-b.price).find(l=>l.price-price<=zone);
+  const nearSup=levels.support.filter(l=>l.price<price).sort((a,b)=>b.price-a.price).find(l=>price-l.price<=zone);
+  const scReady=!!nearRes&&condIV;
+  const spReady=!!nearSup&&condIV;
+  const anyClose=[...levels.resistance,...levels.support].find(l=>Math.abs(l.price-price)<=zone+120);
+
+  renderSig('sc',scReady,nearRes,price,dte,iv,condIV);
+  renderSig('sp',spReady,nearSup,price,dte,iv,condIV);
+
+  const banner=document.getElementById('alertBanner');
+  const badge=document.getElementById('mainBadge');
+  if(scReady&&spReady){
+    banner.className='alert-banner show ab-both';
+    banner.textContent=`SC 及 SP 條件同時觸發 · 結算 ${selExpLabel} · IV ${iv}% · 請確認權利金 20～80 點`;
+    badge.className='badge b-both';badge.textContent='SC + SP';
+  } else if(scReady){
+    banner.className='alert-banner show ab-sc';
+    banner.textContent=`SC 進場訊號 · 台指接近壓力 ${nearRes.price.toLocaleString()} · 結算 ${selExpLabel} · IV ${iv}%`;
+    badge.className='badge b-sc';badge.textContent='SC 進場';
+  } else if(spReady){
+    banner.className='alert-banner show ab-sp';
+    banner.textContent=`SP 進場訊號 · 台指接近支撐 ${nearSup.price.toLocaleString()} · 結算 ${selExpLabel} · IV ${iv}%`;
+    badge.className='badge b-sp';badge.textContent='SP 進場';
+  } else if(anyClose){
+    banner.className='alert-banner show ab-w';
+    banner.textContent=`注意 · 台指接近 ${anyClose.price.toLocaleString()}，距離 ${Math.abs(anyClose.price-price)} 點，持續觀察`;
+    badge.className='badge b-w';badge.textContent='接近關鍵位';
+  } else {
+    banner.className='alert-banner';
+    badge.className='badge b-n';badge.textContent='觀望中';
+  }
+
+  const ote=getOTE(dte);
+  ['ote0','ote1','ote2'].forEach((id,i)=>{
+    document.getElementById(id).className=i===ote.row?'active-ote':'';
+  });
+
+  const conds=[
+    {ok:!!nearRes||!!nearSup,warn:false,text:'接近支撐 / 壓力點位',val:nearRes?`壓力 ${nearRes.price.toLocaleString()}`:nearSup?`支撐 ${nearSup.price.toLocaleString()}`:'尚未接近'},
+    {ok:true,warn:false,text:'結算日',val:`${selExpLabel} · ${dte} 天`},
+    {ok:condIV,warn:iv>ivMax,text:`IV ${ivMin}～${ivMax}%`,val:`${iv}%`},
+    {ok:null,warn:false,text:'權利金 20～80 點',val:'請人工確認'},
+  ];
+  document.getElementById('condList').innerHTML=conds.map(c=>{
+    const ic=c.ok===true?'ci-ok':c.warn?'ci-w':'ci-no';
+    const sym=c.ok===true?'✓':c.warn?'!':'–';
+    const vc=c.ok===true?'cv-ok':c.warn?'cv-w':'cv-no';
+    return `<div class="cond-row"><div class="ci ${ic}">${sym}</div><span class="ct2">${c.text}</span><span class="cv ${vc}">${c.val}</span></div>`;
+  }).join('');
+
+  saveState();
+}
+
+function askClaude(){
+  const price=document.getElementById('curPrice').value;
+  const iv=document.getElementById('curIV').value;
+  const res=levels.resistance.map(l=>l.price).join('、');
+  const sup=levels.support.map(l=>l.price).join('、');
+  const ote=getOTE(selDTE);
+  alert(`請複製以下內容貼到 Claude：\n\n台指期 ${price}，壓力：${res}，支撐：${sup}，結算 ${selExpLabel}，剩 ${selDTE} 天（${ote.desc}），IV ${iv}%，請分析 SC / SP 進場建議與風險管理`);
+}
+
+function saveState(){
+  try{localStorage.setItem('txf_levels_v2',JSON.stringify(levels));}catch(e){}
+}
+function loadState(){
+  try{const s=localStorage.getItem('txf_levels_v2');if(s)levels=JSON.parse(s);}catch(e){}
+}
+
+function updateClock(){
+  const now=new Date();
+  document.getElementById('clock').textContent=
+    String(now.getHours()).padStart(2,'0')+':'+
+    String(now.getMinutes()).padStart(2,'0')+':'+
+    String(now.getSeconds()).padStart(2,'0');
+}
+
+document.getElementById('holList').innerHTML=HOLIDAYS.map(h=>`<span class="hol-tag">${h.slice(5).replace('-','/')}</span>`).join('');
+document.querySelectorAll('.set-input').forEach(el=>el.addEventListener('input',run));
+document.getElementById('setZone').addEventListener('input',run);
+document.getElementById('curIV').addEventListener('input',run);
+
+loadState();buildExpiry();buildSimBtns();run();
+setInterval(updateClock,1000);updateClock();
+</script>
+</body>
+</html>
